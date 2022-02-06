@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import cookieParser from "cookie-parser";
 import { config } from "dotenv";
 import express, { Request, Response } from "express";
 import expressJwt from "express-jwt";
@@ -16,9 +17,22 @@ const promisifiedSign = promisify(jsonwebtoken.sign);
 const verifyJwtMiddleware = expressJwt({
   secret: JWT_SECRET!,
   algorithms: ["HS256"],
+  getToken: function fromHeaderOrQuerystring(req) {
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.split(" ")[0] === "Bearer"
+    ) {
+      return req.headers.authorization.split(" ")[1];
+    } else if (req.cookies && req.cookies.token) {
+      return req.cookies.token;
+    }
+    return null;
+  },
 });
 
 export const usersRouter = express.Router();
+
+usersRouter.use(cookieParser());
 
 usersRouter.post(
   "/register",
@@ -86,6 +100,7 @@ usersRouter.post(
         street
       );
 
+      res.cookie("token", jwt, { httpOnly: true });
       res.send({ jwt });
     } catch (error: any) {
       res.status(500).send(error.message);
@@ -129,6 +144,7 @@ usersRouter.post(
         user.street!
       );
 
+      res.cookie("token", jwt, { httpOnly: true });
       res.send({ jwt });
     } catch (error: any) {
       res.status(500).send(error.message);

@@ -11,6 +11,17 @@ export const categoriesRouter = express.Router();
 const verifyJwtMiddleware = expressJwt({
   secret: JWT_SECRET!,
   algorithms: ["HS256"],
+  getToken: function fromHeaderOrQuerystring(req) {
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.split(" ")[0] === "Bearer"
+    ) {
+      return req.headers.authorization.split(" ")[1];
+    } else if (req.cookies.token && req.cookies.token) {
+      return req.cookies.token;
+    }
+    return null;
+  },
 });
 
 categoriesRouter.get(
