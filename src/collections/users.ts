@@ -12,14 +12,21 @@ interface IUser extends Document {
 }
 
 const UserSchema = new Schema<IUser>({
-  firstName: { type: String, required: true },
-  lastName: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  idNum: { type: Number, required: true, unique: true },
+  firstName: { type: String, required: true, minlength: 2, trim: true },
+  lastName: { type: String, required: true, minlength: 2, trim: true },
+  email: { type: String, required: true, unique: true, trim: true },
+  idNum: {
+    type: Number,
+    required: true,
+    unique: true,
+    trim: true,
+    min: 100000000,
+    max: 999999999,
+  },
   encryptedPassword: { type: String, required: true },
-  isAdmin: { type: Number, required: true },
-  city: { type: String, required: true },
-  street: { type: String, required: true },
+  isAdmin: { type: Number, required: true, trim: true },
+  city: { type: String, required: true, trim: true },
+  street: { type: String, required: true, trim: true, minlength: 2 },
 });
 
 export const User = model<IUser>("User", UserSchema);

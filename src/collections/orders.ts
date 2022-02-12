@@ -19,7 +19,12 @@ const OrderSchema = new Schema<IOrder>({
   streetForShipping: { type: String, required: true },
   shippingDate: { type: Date, required: true },
   orderingDate: { type: Date, required: true, default: new Date() },
-  fourLastDigitsOfPayment: { type: Number, required: true },
+  fourLastDigitsOfPayment: {
+    type: Number,
+    required: true,
+    min: 1000,
+    max: 9999,
+  },
 });
 
 export const Order = model<IOrder>("Order", OrderSchema);

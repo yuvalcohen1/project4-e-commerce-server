@@ -1,4 +1,6 @@
+import cookieParser from "cookie-parser";
 import cors from "cors";
+import { config } from "dotenv";
 import express from "express";
 import { connectDb } from "./mongodb";
 import { cartItemsRouter } from "./routers/cart-items-router";
@@ -7,17 +9,19 @@ import { categoriesRouter } from "./routers/categories-router";
 import { ordersRouter } from "./routers/orders-router";
 import { productsRouter } from "./routers/products-router";
 import { usersRouter } from "./routers/users-router";
-import { config } from "dotenv";
-import cookieParser from "cookie-parser";
 
 config();
 const { PORT } = process.env;
 
 const app = express();
-app.use(cookieParser());
 
+const CORS_CONFIG = {
+  origin: true,
+  credentials: true,
+};
+app.use(cors(CORS_CONFIG));
+app.use(cookieParser());
 app.use(express.json());
-app.use(cors());
 
 app.use("/users", usersRouter);
 app.use("/products", productsRouter);

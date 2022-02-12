@@ -20,7 +20,7 @@ const verifyJwtMiddleware = expressJwt({
       req.headers.authorization.split(" ")[0] === "Bearer"
     ) {
       return req.headers.authorization.split(" ")[1];
-    } else if (req.cookies.token && req.cookies.token) {
+    } else if (req.cookies && req.cookies.token) {
       return req.cookies.token;
     }
     return null;
@@ -151,9 +151,10 @@ ordersRouter.post(
 );
 
 ordersRouter.get(
-  "/receipt-file/:userId",
+  "/receipt-file",
+  verifyJwtMiddleware,
   async (req: Request, res: Response) => {
-    const { userId }: any = req.params;
+    const { _id: userId }: any = req.user;
     if (!userId) {
       return res.sendStatus(400);
     }

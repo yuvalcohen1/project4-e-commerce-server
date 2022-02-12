@@ -1,5 +1,4 @@
 import bcrypt from "bcrypt";
-import cookieParser from "cookie-parser";
 import { config } from "dotenv";
 import express, { Request, Response } from "express";
 import expressJwt from "express-jwt";
@@ -31,8 +30,6 @@ const verifyJwtMiddleware = expressJwt({
 });
 
 export const usersRouter = express.Router();
-
-usersRouter.use(cookieParser());
 
 usersRouter.post(
   "/register",
@@ -101,7 +98,7 @@ usersRouter.post(
       );
 
       res.cookie("token", jwt, { httpOnly: true });
-      res.send({ jwt });
+      res.end();
     } catch (error: any) {
       res.status(500).send(error.message);
     }
@@ -144,8 +141,8 @@ usersRouter.post(
         user.street!
       );
 
-      res.cookie("token", jwt, { httpOnly: true });
-      res.send({ jwt });
+      res.cookie("token", jwt, { httpOnly: true, maxAge: 253370764800000 });
+      res.end();
     } catch (error: any) {
       res.status(500).send(error.message);
     }
@@ -174,6 +171,15 @@ usersRouter.get(
     } catch (error: any) {
       res.status(500).send(error.message);
     }
+  }
+);
+
+usersRouter.post(
+  "/delete-token-cookie",
+  verifyJwtMiddleware,
+  (req: Request, res: Response) => {
+    res.clearCookie("token", { httpOnly: true, maxAge: 253370764800000 });
+    res.end();
   }
 );
 

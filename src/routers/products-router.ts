@@ -18,7 +18,7 @@ const verifyJwtMiddleware = expressJwt({
       req.headers.authorization.split(" ")[0] === "Bearer"
     ) {
       return req.headers.authorization.split(" ")[1];
-    } else if (req.cookies.token && req.cookies.token) {
+    } else if (req.cookies && req.cookies.token) {
       return req.cookies.token;
     }
     return null;
