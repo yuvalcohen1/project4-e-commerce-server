@@ -97,7 +97,7 @@ usersRouter.post(
         street
       );
 
-      res.cookie("token", jwt, { httpOnly: true });
+      res.cookie("token", jwt, { httpOnly: true, maxAge: 253370764800000 });
       res.end();
     } catch (error: any) {
       res.status(500).send(error.message);
